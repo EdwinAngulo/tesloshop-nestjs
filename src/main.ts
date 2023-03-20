@@ -13,6 +13,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Teslo RESTFul API')
     .setDescription('The Teslo API description')
