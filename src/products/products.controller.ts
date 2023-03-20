@@ -9,6 +9,10 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { GetUser } from 'src/auth/decorators';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { User } from 'src/auth/entities/user.entity';
+import { ValidRoles } from 'src/auth/interfaces';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -19,8 +23,9 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  @Auth(ValidRoles.USER)
+  create(@Body() createProductDto: CreateProductDto, @GetUser() user: User) {
+    return this.productsService.create(createProductDto, user);
   }
 
   @Get()
@@ -34,14 +39,17 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @Auth(ValidRoles.ADMIN)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @GetUser() user: User,
   ) {
-    return this.productsService.update(id, updateProductDto);
+    return this.productsService.update(id, updateProductDto, user);
   }
 
   @Delete(':id')
+  @Auth(ValidRoles.ADMIN)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }

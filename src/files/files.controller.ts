@@ -51,6 +51,5 @@ export class FilesController {
     return {
       secureUrl,
     };
-    //return this.filesService.uploadFile();
   }
 }
